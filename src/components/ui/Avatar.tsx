@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { getInitials } from '../../lib/initials'
 
-type AvatarSize = 'sm' | 'md' | 'lg'
+type AvatarSize = 'sm' | 'topbar' | 'md' | 'lg'
 type AvatarVariant = 'filled' | 'outline'
 
 interface AvatarProps {
@@ -14,6 +14,7 @@ interface AvatarProps {
 
 const sizeClasses: Record<AvatarSize, string> = {
   sm: 'size-6 text-[9px]',
+  topbar: 'size-8 text-[11px]',
   md: 'size-[34px] text-xs',
   lg: 'size-10 text-sm',
 }

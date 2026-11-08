@@ -3,6 +3,7 @@ import { AnimatePresence } from 'motion/react'
 import { Navigate, Route, Routes } from 'react-router'
 import SplashScreen from './components/SplashScreen'
 import AppLayout from './components/layout/AppLayout'
+import ComingSoonPage from './components/layout/ComingSoonPage'
 import LandingPage from './features/landing/LandingPage'
 import LoginPage from './features/auth/LoginPage'
 import WorkspacePage from './features/workspace/WorkspacePage'
@@ -25,6 +26,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/app" element={<AppLayout />}>
           <Route index element={<WorkspacePage />} />
+          <Route path="clientes" element={<ComingSoonPage title="Clientes" />} />
+          <Route path="atividades" element={<ComingSoonPage title="Atividades" />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
