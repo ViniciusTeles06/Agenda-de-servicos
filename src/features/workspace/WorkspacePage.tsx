@@ -61,7 +61,6 @@ function WorkspacePage() {
           icon={<Search {...iconProps} />}
         />
         <Input label="E-mail" type="email" placeholder="voce@empresa.com" hint="Use o e-mail cadastrado." />
-        <Input label="Senha" type="password" placeholder="Sua senha" error="Senha incorreta. Tente novamente." />
       </div>
     </section>
   )
