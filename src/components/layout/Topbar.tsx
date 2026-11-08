@@ -25,18 +25,23 @@ function NavItems({ indicatorId, className = '' }: NavItemsProps) {
           to={item.to}
           end={item.end}
           className={({ isActive }) =>
-            `relative flex items-center text-[13px] whitespace-nowrap transition-colors duration-200 ${
-              isActive ? 'font-medium text-brand' : 'text-muted hover:text-ink'
+            `relative flex items-center text-[13px] leading-none whitespace-nowrap transition-colors duration-200 ${
+              isActive ? 'font-semibold text-brand' : 'font-normal text-muted hover:text-ink'
             }`
           }
         >
           {({ isActive }) => (
             <>
-              {item.label}
+              <span className="grid">
+                <span className="col-start-1 row-start-1">{item.label}</span>
+                <span aria-hidden="true" className="invisible col-start-1 row-start-1 font-semibold">
+                  {item.label}
+                </span>
+              </span>
               {isActive && (
                 <motion.span
                   layoutId={indicatorId}
-                  className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-brand"
+                  className="absolute inset-x-0 -bottom-px h-0.5 bg-accent"
                   transition={
                     reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 500, damping: 38 }
                   }
@@ -55,12 +60,12 @@ function Topbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur-md">
-      <div className="flex h-[72px] items-center px-4 sm:px-8 lg:px-12">
-        <Link to="/app" className="font-brand text-[15px] font-medium text-brand">
+      <div className="flex h-[75px] items-center px-4 sm:px-8 lg:px-12">
+        <Link to="/app" className="font-brand text-[15px] leading-none font-normal text-brand">
           ServiceHub
         </Link>
 
-        <span aria-hidden="true" className="mx-6 hidden h-6 w-px bg-line md:block" />
+        <span aria-hidden="true" className="mx-10 hidden h-6 w-px bg-line md:block" />
 
         <button
           type="button"
@@ -88,7 +93,7 @@ function Topbar() {
             aria-label="Abrir menu da conta"
             className="rounded-full transition-shadow duration-200 hover:shadow-[0_0_0_3px_#E4E8E3]"
           >
-            <Avatar name="Usuário" size="topbar" />
+            <Avatar name="Usuário" />
           </button>
         </div>
       </div>

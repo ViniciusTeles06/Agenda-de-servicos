@@ -3,7 +3,9 @@
 @theme {
   --color-brand: #1347A1;
   --color-brand-hover: #0F3A85;
+  --color-accent: #27644E;
 
+  --color-page: #F6F7F5;
   --color-surface: #FFFFFF;
   --color-surface-soft: #F9FAF8;
   --color-ink: #202824;
@@ -25,64 +27,66 @@
   --font-brand: 'Lexend Exa Variable', 'Lexend Exa', ui-sans-serif, system-ui, sans-serif;
 }
 
-:root {
-  font-family: var(--font-sans);
-  color: var(--color-ink);
-  background: var(--color-surface);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color-scheme: light;
-}
+@layer base {
+  :root {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-surface);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-html {
-  min-width: 320px;
-  min-height: 100%;
-  scroll-behavior: smooth;
-}
+  html {
+    min-width: 320px;
+    min-height: 100%;
+    scroll-behavior: smooth;
+  }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  background: var(--color-surface);
-  color: var(--color-ink);
-}
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
 
-#root {
-  width: 100%;
-  min-height: 100vh;
-  isolation: isolate;
-}
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    isolation: isolate;
+  }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 
-button {
-  cursor: pointer;
-}
+  button {
+    cursor: pointer;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
 
-::selection {
-  color: #FFFFFF;
-  background: var(--color-brand);
+  ::selection {
+    color: #FFFFFF;
+    background: var(--color-brand);
+  }
 }

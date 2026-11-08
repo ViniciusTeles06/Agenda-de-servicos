@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { getInitials } from '../../lib/initials'
 
-type AvatarSize = 'sm' | 'topbar' | 'md' | 'lg'
+type AvatarSize = 'sm' | 'md' | 'lg'
 type AvatarVariant = 'filled' | 'outline'
 
 interface AvatarProps {
@@ -14,9 +14,8 @@ interface AvatarProps {
 
 const sizeClasses: Record<AvatarSize, string> = {
   sm: 'size-6 text-[9px]',
-  topbar: 'size-8 text-[11px]',
-  md: 'size-[34px] text-xs',
-  lg: 'size-10 text-sm',
+  md: 'size-[34px] text-[11px]',
+  lg: 'size-10 text-[13px]',
 }
 
 const variantClasses: Record<AvatarVariant, string> = {
@@ -32,7 +31,7 @@ function Avatar({ name, src, size = 'md', variant = 'filled', className = '' }: 
     <span
       role="img"
       aria-label={name}
-      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-medium select-none ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full leading-none font-semibold select-none ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
     >
       {showImage ? (
         <img
