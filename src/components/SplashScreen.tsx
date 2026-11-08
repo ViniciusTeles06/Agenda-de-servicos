@@ -88,7 +88,7 @@ function SplashScreen({ onFinish }: SplashScreenProps) {
   const content = reduceMotion ? (
     <>
       <Logo size={224} />
-      <p className="mt-6 text-4xl font-semibold tracking-tight text-brand">ServiceHub</p>
+      <p className="mt-6 font-brand text-4xl font-medium text-brand">ServiceHub</p>
     </>
   ) : (
     <>
@@ -242,7 +242,7 @@ function SplashScreen({ onFinish }: SplashScreenProps) {
       </motion.div>
 
       <motion.p
-        className="mt-8 text-3xl font-semibold tracking-tight text-brand sm:text-4xl lg:text-5xl"
+        className="mt-8 font-brand text-2xl font-medium text-brand sm:text-3xl lg:text-4xl"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={at(CHECK_AT - 0.2, 0.7)}

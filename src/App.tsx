@@ -1,7 +1,11 @@
 import { useCallback, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence } from 'motion/react'
+import { Navigate, Route, Routes } from 'react-router'
 import SplashScreen from './components/SplashScreen'
-import Logo from './components/ui/Logo'
+import AppLayout from './components/layout/AppLayout'
+import LandingPage from './features/landing/LandingPage'
+import LoginPage from './features/auth/LoginPage'
+import WorkspacePage from './features/workspace/WorkspacePage'
 
 function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -11,25 +15,20 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white">
-      <AnimatePresence mode="wait">
-        {showSplash ? (
-          <SplashScreen key="splash" onFinish={handleSplashFinish} />
-        ) : (
-          <motion.main
-            key="home"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-ink"
-          >
-            <Logo size={64} />
-            <h1 className="text-3xl font-semibold tracking-tight">ServiceHub</h1>
-            <p className="text-muted">Página inicial em construção.</p>
-          </motion.main>
-        )}
+    <>
+      <AnimatePresence>
+        {showSplash && <SplashScreen key="splash" onFinish={handleSplashFinish} />}
       </AnimatePresence>
-    </div>
+
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/app" element={<AppLayout />}>
+          <Route index element={<WorkspacePage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   )
 }
 

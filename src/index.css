@@ -8,6 +8,7 @@
   --color-surface-soft: #F9FAF8;
   --color-ink: #202824;
   --color-muted: #707973;
+  --color-placeholder: #929A95;
   --color-line: #E4E8E3;
 
   --color-avatar: #EFF0E9;
@@ -21,6 +22,7 @@
   --color-danger-soft: #EEF0ED;
 
   --font-sans: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-brand: 'Lexend Exa Variable', 'Lexend Exa', ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
