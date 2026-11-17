@@ -22,8 +22,19 @@ Desenvolver uma aplicação que facilite o cadastro e a organização de serviç
   - [Manoel Davi de Moura](https://github.com/DaviMoura-giithub)
   - [Heitor Luiz](https://github.com/heitorsiu)
   - [Vinicius Teles](https://github.com/ViniciusTeles06)
-## Status do Projeto
 
-Em desenvolvimento.
+## Repositório
 
----
+- GitHub: https://github.com/lfernandonassau/MBF202602007
+- Branch do front-end (Vinícius): https://github.com/lfernandonassau/MBF202602007/tree/feat/frontend-vinicius
+
+### Como clonar e rodar
+
+```bash
+git clone https://github.com/lfernandonassau/MBF202602007.git
+cd MBF202602007
+git checkout feat/frontend-vinicius
+npm install
+npm run dev
+```
+
