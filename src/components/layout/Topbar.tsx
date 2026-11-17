@@ -5,8 +5,8 @@ import Avatar from '../ui/Avatar'
 
 const navItems = [
   { to: '/app', label: 'Visão geral', end: true },
-  { to: '/app/clientes', label: 'Clientes', end: false },
-  { to: '/app/atividades', label: 'Atividades', end: false },
+  { to: '/app/servicos', label: 'Serviços', end: false },
+  { to: '/app/profissionais', label: 'Profissionais', end: false },
 ]
 
 interface NavItemsProps {

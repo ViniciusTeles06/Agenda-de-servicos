@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 
-export type StatusTone = 'success' | 'warning' | 'danger'
+export type StatusTone = 'success' | 'warning' | 'danger' | 'neutral'
 
 interface StatusBadgeProps {
   tone: StatusTone
@@ -14,6 +14,7 @@ const toneStyles: Record<StatusTone, { badge: string; dot: string; rgb: string }
   success: { badge: 'bg-success-soft text-success', dot: 'bg-success', rgb: '23, 179, 25' },
   warning: { badge: 'bg-warning-soft text-warning', dot: 'bg-warning', rgb: '146, 105, 29' },
   danger: { badge: 'bg-danger-soft text-danger', dot: 'bg-danger', rgb: '187, 7, 10' },
+  neutral: { badge: 'bg-[#F1F2EF] text-muted', dot: 'bg-placeholder', rgb: '146, 154, 149' },
 }
 
 function StatusBadge({ tone, children, pulse = false, className = '' }: StatusBadgeProps) {

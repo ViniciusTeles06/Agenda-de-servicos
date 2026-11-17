@@ -6,6 +6,7 @@ import AppLayout from './components/layout/AppLayout'
 import ComingSoonPage from './components/layout/ComingSoonPage'
 import LandingPage from './features/landing/LandingPage'
 import LoginPage from './features/auth/LoginPage'
+import ServicosPage from './features/servicos/ServicosPage'
 import WorkspacePage from './features/workspace/WorkspacePage'
 
 function App() {
@@ -26,8 +27,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/app" element={<AppLayout />}>
           <Route index element={<WorkspacePage />} />
-          <Route path="clientes" element={<ComingSoonPage title="Clientes" />} />
-          <Route path="atividades" element={<ComingSoonPage title="Atividades" />} />
+          <Route path="servicos" element={<ServicosPage />} />
+          <Route path="profissionais" element={<ComingSoonPage title="Profissionais" />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
