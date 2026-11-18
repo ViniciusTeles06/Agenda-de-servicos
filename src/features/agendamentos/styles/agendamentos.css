@@ -1,0 +1,422 @@
+/* Tela de Agendamentos — medidas extraídas do frame do Figma (largura de referência ≈ 1200px). */
+
+/* ───────── Abas de status ───────── */
+.agd-abas {
+  display: flex;
+  gap: 28px;
+  height: 54px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--agd-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.agd-abas::-webkit-scrollbar {
+  display: none;
+}
+.agd-aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid #c9cdc8;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--agd-text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.agd-aba:hover {
+  color: var(--agd-text);
+}
+.agd-aba--ativa {
+  border-bottom-color: #3a403c;
+  font-weight: 500;
+  color: var(--agd-text);
+}
+.agd-contagem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: #f4f5f2;
+  color: var(--agd-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.agd-aba--ativa .agd-contagem {
+  background: var(--agd-green-soft);
+  color: #2a3a2e;
+}
+.agd-contagem--ativa {
+  background: var(--agd-primary-soft);
+  color: var(--agd-primary);
+}
+
+/* ───────── Barra de ferramentas ───────── */
+.agd-ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--agd-border);
+}
+.agd-busca {
+  position: relative;
+  flex: 0 1 360px;
+  min-width: 240px;
+}
+.agd-busca input {
+  width: 100%;
+  height: 40px;
+  padding-left: 35px;
+  font-size: 12px;
+}
+.agd-busca-icone {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--agd-text-muted);
+  pointer-events: none;
+}
+.agd-colunas {
+  margin-left: auto;
+}
+
+/* ───────── Seleção em lote ───────── */
+.agd-selecao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--agd-border);
+  background: var(--agd-primary-soft);
+}
+.agd-selecao-texto {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--agd-primary-text);
+}
+.agd-selecao-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ───────── Tabela (≥ 1200px) ───────── */
+.agd-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.agd-tabela thead th {
+  height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--agd-border);
+  background: var(--agd-surface-muted);
+  font-size: 11px;
+  font-weight: 400;
+  text-align: left;
+  color: var(--agd-text-muted);
+  white-space: nowrap;
+}
+.agd-tabela tbody td {
+  height: 68px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--agd-border-soft);
+  vertical-align: middle;
+  overflow: hidden;
+}
+.agd-tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+.agd-tabela tbody tr:hover td {
+  background: #fbfbf9;
+}
+.agd-tabela th.agd-col-check,
+.agd-tabela td.agd-col-check {
+  width: 62px;
+  padding: 0 0 0 24px;
+}
+.agd-tabela th.agd-col-cliente,
+.agd-tabela td.agd-col-cliente {
+  padding-left: 0;
+}
+.agd-tabela th.agd-col-check input,
+.agd-tabela td.agd-col-check input {
+  display: block;
+}
+.agd-tabela .agd-col-cliente {
+  width: 22.2%;
+}
+.agd-tabela .agd-col-servico {
+  width: 18%;
+}
+.agd-tabela .agd-col-status {
+  width: 11%;
+}
+.agd-tabela .agd-col-responsavel {
+  width: 16.4%;
+}
+.agd-tabela .agd-col-data {
+  width: 13.2%;
+}
+.agd-tabela th.agd-col-acoes,
+.agd-tabela td.agd-col-acoes {
+  padding-right: 16px;
+  text-align: right;
+  overflow: visible;
+}
+.agd-th-ordenar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--agd-text);
+  cursor: pointer;
+}
+
+.agd-cliente {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.agd-cliente-texto,
+.agd-servico {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.agd-cliente-texto .agd-texto-principal,
+.agd-cliente-texto .agd-texto-secundario,
+.agd-servico .agd-texto-principal,
+.agd-servico .agd-texto-secundario,
+.agd-responsavel span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.agd-texto-servico {
+  color: var(--agd-text-2);
+}
+.agd-responsavel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--agd-text-muted);
+}
+.agd-data {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--agd-text-muted);
+}
+.agd-acoes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.agd-linha--selecionada td,
+.agd-linha--selecionada.agd-cartao {
+  background: #f4f7fd;
+}
+.agd-linha--destaque td,
+.agd-linha--destaque.agd-cartao {
+  animation: agd-destaque 2.6s ease-out;
+}
+@keyframes agd-destaque {
+  from {
+    background-color: #fff3bf;
+  }
+}
+
+/* ───────── Cartões (< 1200px: tablet e celular) ───────── */
+.agd-cartoes {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.agd-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--agd-border-soft);
+}
+.agd-cartao:last-child {
+  border-bottom: 0;
+}
+.agd-cartao-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.agd-cartao-topo .agd-cliente {
+  flex: 1;
+}
+.agd-cartao-meio,
+.agd-cartao-base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-left: 28px;
+}
+
+/* ───────── Rodapé / paginação ───────── */
+.agd-rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  min-height: 68px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--agd-border);
+  font-size: 12px;
+  color: var(--agd-text-muted);
+}
+.agd-rodape-resumo {
+  margin: 0;
+}
+.agd-rodape-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.agd-linhas-por-pagina {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.agd-paginas {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.agd-pagina-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--agd-radius-sm);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: var(--agd-text-2);
+  cursor: pointer;
+}
+.agd-pagina-botao:hover:not(:disabled) {
+  background: var(--agd-hover);
+}
+.agd-pagina-botao:disabled {
+  color: #b8bdb9;
+  cursor: not-allowed;
+}
+.agd-pagina-botao--ativa,
+.agd-pagina-botao--ativa:hover:not(:disabled) {
+  background: var(--agd-green-soft);
+  color: #1f3d2b;
+  font-weight: 600;
+}
+.agd-pagina-reticencias {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+/* ───────── Estado vazio ───────── */
+.agd-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 24px;
+  text-align: center;
+}
+.agd-vazio-icone {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f1f2ee;
+  color: var(--agd-text-muted);
+}
+.agd-vazio-titulo {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.agd-vazio-descricao {
+  max-width: 380px;
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--agd-text-muted);
+}
+
+/* ───────── Responsivo ───────── */
+@media (max-width: 1199px) {
+  .agd-tabela-wrap {
+    display: none;
+  }
+  .agd-cartoes {
+    display: block;
+  }
+  .agd-colunas {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .agd-busca {
+    flex: 1 1 100%;
+  }
+  .agd-ferramentas {
+    padding: 12px 16px;
+  }
+  .agd-abas {
+    padding: 0 16px;
+    gap: 20px;
+  }
+  .agd-selecao {
+    padding: 10px 16px;
+  }
+  .agd-rodape {
+    padding: 12px 16px;
+    justify-content: center;
+    text-align: center;
+  }
+  .agd-rodape-controles {
+    justify-content: center;
+  }
+}

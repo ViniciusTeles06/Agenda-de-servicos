@@ -7,6 +7,8 @@ import ComingSoonPage from './components/layout/ComingSoonPage'
 import LandingPage from './features/landing/LandingPage'
 import LoginPage from './features/auth/LoginPage'
 import WorkspacePage from './features/workspace/WorkspacePage'
+import { AgendamentosPage } from './features/agendamentos'
+import { CalendarioPage } from './features/calendario'
 
 function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -28,6 +30,8 @@ function App() {
           <Route index element={<WorkspacePage />} />
           <Route path="clientes" element={<ComingSoonPage title="Clientes" />} />
           <Route path="atividades" element={<ComingSoonPage title="Atividades" />} />
+          <Route path="agendamentos" element={<AgendamentosPage />} />
+          <Route path="calendario" element={<CalendarioPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
