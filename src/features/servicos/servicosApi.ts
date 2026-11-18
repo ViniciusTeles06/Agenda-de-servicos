@@ -13,6 +13,7 @@ import type { Pagina } from '../../lib/api'
 import type { FiltrosServico, Servico, ServicoEntrada } from './types'
 
 const CHAVE = 'servicehub:servicos'
+export const CHAVE_PROFISSIONAIS = 'servicehub:profissionais'
 
 const iniciais: Servico[] = [
   { id: 1, nome: 'Corte de cabelo', descricao: 'Corte masculino ou feminino', duracaoMinutos: 30, ativo: true, totalProfissionais: 2 },
@@ -28,6 +29,23 @@ const iniciais: Servico[] = [
 ]
 
 let servicos = lerArmazenado<Servico[]>(CHAVE, iniciais)
+
+function contarProfissionais(servico: Servico) {
+  const vinculos = lerArmazenado<{ servicoIds: number[] }[] | null>(CHAVE_PROFISSIONAIS, null)
+  if (!vinculos) return servico.totalProfissionais
+  return vinculos.filter((item) => item.servicoIds.includes(servico.id)).length
+}
+
+function comContagem(servico: Servico): Servico {
+  return { ...servico, totalProfissionais: contarProfissionais(servico) }
+}
+
+export function nomesDosServicos(ids: number[]) {
+  return servicos
+    .filter((item) => ids.includes(item.id))
+    .map((item) => ({ id: item.id, nome: item.nome }))
+    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+}
 
 function salvar(lista: Servico[]) {
   servicos = lista
@@ -61,6 +79,7 @@ export async function listarServicos(filtros: FiltrosServico): Promise<Pagina<Se
   const termo = normalizarTexto(filtros.busca)
 
   const filtrados = servicos
+    .map(comContagem)
     .filter((item) => filtros.status === 'todos' || item.ativo === (filtros.status === 'ativos'))
     .filter((item) => !termo || normalizarTexto(`${item.nome} ${item.descricao ?? ''}`).includes(termo))
     .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
@@ -91,7 +110,7 @@ export async function atualizarServico(id: number, dados: ServicoEntrada): Promi
   garantirNomeUnico(dados.nome, id)
   const atualizado: Servico = { ...atual, ...dados }
   salvar(servicos.map((item) => (item.id === id ? atualizado : item)))
-  return atualizado
+  return comContagem(atualizado)
 }
 
 export async function alterarStatusServico(id: number, ativo: boolean): Promise<Servico> {
@@ -102,7 +121,7 @@ export async function alterarStatusServico(id: number, ativo: boolean): Promise<
   await esperar(300)
   const atualizado: Servico = { ...buscarPorId(id), ativo }
   salvar(servicos.map((item) => (item.id === id ? atualizado : item)))
-  return atualizado
+  return comContagem(atualizado)
 }
 
 export async function excluirServico(id: number): Promise<void> {
@@ -111,7 +130,7 @@ export async function excluirServico(id: number): Promise<void> {
   }
 
   await esperar(500)
-  const servico = buscarPorId(id)
+  const servico = comContagem(buscarPorId(id))
 
   if (servico.totalProfissionais > 0) {
     throw new ApiError(409, 'Esse serviço está vinculado a profissionais. Desative em vez de excluir.')
