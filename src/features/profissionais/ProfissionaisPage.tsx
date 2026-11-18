@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Phone, Plus, Power, RotateCcw, Search, Trash2 } from 'lucide-react'
+import { Clock3, Pencil, Phone, Plus, Power, RotateCcw, Search, Trash2 } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import PageHeader from '../../components/layout/PageHeader'
 import Avatar from '../../components/ui/Avatar'
@@ -15,6 +15,7 @@ import { useToast } from '../../components/ui/toast/toastContext'
 import { formatarTelefone } from '../../lib/formatters'
 import { useConsulta } from '../../lib/useConsulta'
 import { useDebounce } from '../../lib/useDebounce'
+import HorariosModal from './HorariosModal'
 import ProfissionalFormModal from './ProfissionalFormModal'
 import { alterarStatusProfissional, excluirProfissional, listarProfissionais } from './profissionaisApi'
 import type { FiltroStatus, Profissional, ServicoResumo } from './types'
@@ -32,15 +33,17 @@ interface AcoesProps {
   profissional: Profissional
   alterando: boolean
   onEditar: () => void
+  onHorarios: () => void
   onAlternar: () => void
   onExcluir: () => void
 }
 
-function Acoes({ profissional, alterando, onEditar, onAlternar, onExcluir }: AcoesProps) {
+function Acoes({ profissional, alterando, onEditar, onHorarios, onAlternar, onExcluir }: AcoesProps) {
   const primeiroNome = profissional.nome.split(' ')[0]
 
   return (
     <div className="flex items-center justify-end gap-0.5">
+      <IconButton label={`Horários de ${primeiroNome}`} icon={<Clock3 {...iconProps} />} onClick={onHorarios} />
       <IconButton label={`Editar ${primeiroNome}`} icon={<Pencil {...iconProps} />} onClick={onEditar} />
       <IconButton
         label={profissional.ativo ? `Desativar ${primeiroNome}` : `Ativar ${primeiroNome}`}
@@ -119,6 +122,11 @@ function ProfissionaisPage() {
     profissional: null,
     chave: 0,
   })
+  const [horarios, setHorarios] = useState<{ open: boolean; profissional: Profissional | null; chave: number }>({
+    open: false,
+    profissional: null,
+    chave: 0,
+  })
   const [alterandoId, setAlterandoId] = useState<number | null>(null)
 
   const profissionais = dados?.content ?? []
@@ -131,6 +139,19 @@ function ProfissionaisPage() {
 
   function fecharFormulario() {
     setFormulario((atual) => ({ ...atual, open: false }))
+  }
+
+  function abrirHorarios(profissional: Profissional) {
+    setHorarios((atual) => ({ open: true, profissional, chave: atual.chave + 1 }))
+  }
+
+  function fecharHorarios() {
+    setHorarios((atual) => ({ ...atual, open: false }))
+  }
+
+  function handleHorariosSalvos(profissional: Profissional) {
+    fecharHorarios()
+    toast({ title: 'Horários salvos', description: profissional.nome })
   }
 
   function abrirExclusao(profissional: Profissional) {
@@ -306,6 +327,7 @@ function ProfissionaisPage() {
                           profissional={profissional}
                           alterando={alterandoId === profissional.id}
                           onEditar={() => abrirFormulario(profissional)}
+                          onHorarios={() => abrirHorarios(profissional)}
                           onAlternar={() => handleAlternar(profissional)}
                           onExcluir={() => abrirExclusao(profissional)}
                         />
@@ -342,6 +364,7 @@ function ProfissionaisPage() {
                         profissional={profissional}
                         alterando={alterandoId === profissional.id}
                         onEditar={() => abrirFormulario(profissional)}
+                        onHorarios={() => abrirHorarios(profissional)}
                         onAlternar={() => handleAlternar(profissional)}
                         onExcluir={() => abrirExclusao(profissional)}
                       />
@@ -372,6 +395,14 @@ function ProfissionaisPage() {
         profissional={formulario.profissional}
         onClose={fecharFormulario}
         onSaved={handleSalvo}
+      />
+
+      <HorariosModal
+        key={`horarios-${horarios.chave}`}
+        open={horarios.open}
+        profissional={horarios.profissional}
+        onClose={fecharHorarios}
+        onSaved={handleHorariosSalvos}
       />
 
       <ConfirmDialog

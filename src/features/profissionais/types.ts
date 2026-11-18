@@ -28,3 +28,9 @@ export interface FiltrosProfissional {
   pagina: number
   tamanho: number
 }
+
+export interface Disponibilidade {
+  diaSemana: number
+  horaInicio: string
+  horaFim: string
+}

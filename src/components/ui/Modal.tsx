@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
-type ModalWidth = 'sm' | 'md'
+type ModalWidth = 'sm' | 'md' | 'lg'
 
 interface ModalProps {
   open: boolean
@@ -20,6 +20,7 @@ interface ModalProps {
 const widthClasses: Record<ModalWidth, string> = {
   sm: 'sm:max-w-[420px]',
   md: 'sm:max-w-[540px]',
+  lg: 'sm:max-w-[680px]',
 }
 
 const focusableSelector =

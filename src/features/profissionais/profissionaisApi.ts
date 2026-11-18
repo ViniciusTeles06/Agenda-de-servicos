@@ -11,7 +11,8 @@ import {
 } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
 import { CHAVE_PROFISSIONAIS, nomesDosServicos } from '../servicos/servicosApi'
-import type { FiltrosProfissional, Profissional, ProfissionalEntrada } from './types'
+import { normalizarHora, ordenarIntervalos } from './horarios'
+import type { Disponibilidade, FiltrosProfissional, Profissional, ProfissionalEntrada } from './types'
 
 interface ProfissionalSalvo {
   id: number
@@ -28,6 +29,27 @@ const iniciais: ProfissionalSalvo[] = [
   { id: 3, nome: 'Carla Mendes', email: 'carla.mendes@exemplo.com', telefone: '82999990003', ativo: true, servicoIds: [4, 5] },
   { id: 4, nome: 'Diego Santos', email: 'diego.santos@exemplo.com', telefone: '82999990004', ativo: false, servicoIds: [2] },
 ]
+
+const CHAVE_DISPONIBILIDADES = 'servicehub:disponibilidades'
+
+function expediente(dias: number[], faixas: [string, string][]) {
+  return dias.flatMap((diaSemana) => faixas.map(([horaInicio, horaFim]) => ({ diaSemana, horaInicio, horaFim })))
+}
+
+const diasUteis = [1, 2, 3, 4, 5]
+const manhaETarde: [string, string][] = [
+  ['08:00', '12:00'],
+  ['14:00', '18:00'],
+]
+
+const disponibilidadesIniciais: Record<number, Disponibilidade[]> = {
+  1: expediente(diasUteis, manhaETarde),
+  2: expediente(diasUteis, manhaETarde),
+  3: expediente(diasUteis, manhaETarde),
+  4: expediente([6], [['08:00', '14:00']]),
+}
+
+let disponibilidades = lerArmazenado<Record<number, Disponibilidade[]>>(CHAVE_DISPONIBILIDADES, disponibilidadesIniciais)
 
 let profissionais = lerArmazenado<ProfissionalSalvo[]>(CHAVE_PROFISSIONAIS, iniciais)
 salvarArmazenado(CHAVE_PROFISSIONAIS, profissionais)
@@ -126,4 +148,38 @@ export async function excluirProfissional(id: number): Promise<void> {
   await esperar(500)
   buscarPorId(id)
   salvar(profissionais.filter((item) => item.id !== id))
+  const restantes = { ...disponibilidades }
+  delete restantes[id]
+  disponibilidades = restantes
+  salvarArmazenado(CHAVE_DISPONIBILIDADES, restantes)
+}
+
+export async function listarDisponibilidades(profissionalId: number): Promise<Disponibilidade[]> {
+  if (usandoApiReal) {
+    const lista = await requisicao<Disponibilidade[]>(`/api/profissionais/${profissionalId}/disponibilidades`)
+    return ordenarIntervalos(
+      lista.map((item) => ({ ...item, horaInicio: normalizarHora(item.horaInicio), horaFim: normalizarHora(item.horaFim) })),
+    )
+  }
+
+  await esperar()
+  buscarPorId(profissionalId)
+  return ordenarIntervalos(disponibilidades[profissionalId] ?? [])
+}
+
+export async function salvarDisponibilidades(profissionalId: number, lista: Disponibilidade[]): Promise<Disponibilidade[]> {
+  const ordenada = ordenarIntervalos(lista)
+
+  if (usandoApiReal) {
+    return requisicao(`/api/profissionais/${profissionalId}/disponibilidades`, {
+      method: 'PUT',
+      body: JSON.stringify(ordenada),
+    })
+  }
+
+  await esperar(500)
+  buscarPorId(profissionalId)
+  disponibilidades = { ...disponibilidades, [profissionalId]: ordenada }
+  salvarArmazenado(CHAVE_DISPONIBILIDADES, disponibilidades)
+  return ordenada
 }
