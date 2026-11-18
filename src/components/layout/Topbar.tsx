@@ -5,6 +5,8 @@ import Avatar from '../ui/Avatar'
 
 const navItems = [
   { to: '/app', label: 'Visão geral', end: true },
+  { to: '/app/agendamentos', label: 'Agendamentos', end: false },
+  { to: '/app/calendario', label: 'Calendário', end: false },
   { to: '/app/clientes', label: 'Clientes', end: false },
   { to: '/app/atividades', label: 'Atividades', end: false },
 ]

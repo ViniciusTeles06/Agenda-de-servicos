@@ -28,10 +28,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/app" element={<AppLayout />}>
           <Route index element={<WorkspacePage />} />
-          <Route path="clientes" element={<ComingSoonPage title="Clientes" />} />
-          <Route path="atividades" element={<ComingSoonPage title="Atividades" />} />
           <Route path="agendamentos" element={<AgendamentosPage />} />
           <Route path="calendario" element={<CalendarioPage />} />
+          <Route path="clientes" element={<ComingSoonPage title="Clientes" />} />
+          <Route path="atividades" element={<ComingSoonPage title="Atividades" />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
