@@ -1,8 +1,14 @@
-import { Outlet } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router'
+import { useSessao } from '../../lib/sessao'
 import ToastProvider from '../ui/toast/ToastProvider'
 import Topbar from './Topbar'
 
 function AppLayout() {
+  const sessao = useSessao()
+  const location = useLocation()
+
+  if (!sessao) return <Navigate to="/login" replace state={{ de: location.pathname }} />
+
   return (
     <ToastProvider>
       <div className="min-h-screen bg-page">

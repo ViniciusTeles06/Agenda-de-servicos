@@ -10,6 +10,7 @@ import {
   usandoApiReal,
 } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
+import { registrarAtividade } from '../atividades/atividadesApi'
 import { CHAVE_PROFISSIONAIS, nomesDosServicos } from '../servicos/servicosApi'
 import { normalizarHora, ordenarIntervalos } from './horarios'
 import type { Disponibilidade, FiltrosProfissional, Profissional, ProfissionalEntrada } from './types'
@@ -113,6 +114,7 @@ export async function criarProfissional(dados: ProfissionalEntrada): Promise<Pro
   const id = Math.max(0, ...profissionais.map((item) => item.id)) + 1
   const novo: ProfissionalSalvo = { ...dados, id }
   salvar([...profissionais, novo])
+  registrarAtividade('profissional', `${novo.nome} entrou na equipe`)
   return paraResposta(novo)
 }
 
@@ -126,6 +128,7 @@ export async function atualizarProfissional(id: number, dados: ProfissionalEntra
   garantirEmailUnico(dados.email, id)
   const atualizado: ProfissionalSalvo = { ...dados, id }
   salvar(profissionais.map((item) => (item.id === id ? atualizado : item)))
+  registrarAtividade('profissional', `Dados de ${atualizado.nome} atualizados`)
   return paraResposta(atualizado)
 }
 
@@ -137,6 +140,7 @@ export async function alterarStatusProfissional(id: number, ativo: boolean): Pro
   await esperar(300)
   const atualizado: ProfissionalSalvo = { ...buscarPorId(id), ativo }
   salvar(profissionais.map((item) => (item.id === id ? atualizado : item)))
+  registrarAtividade('profissional', `${atualizado.nome} foi ${ativo ? 'ativado' : 'desativado'}`)
   return paraResposta(atualizado)
 }
 
@@ -146,8 +150,9 @@ export async function excluirProfissional(id: number): Promise<void> {
   }
 
   await esperar(500)
-  buscarPorId(id)
+  const removido = buscarPorId(id)
   salvar(profissionais.filter((item) => item.id !== id))
+  registrarAtividade('profissional', `${removido.nome} foi removido da equipe`)
   const restantes = { ...disponibilidades }
   delete restantes[id]
   disponibilidades = restantes
@@ -178,8 +183,9 @@ export async function salvarDisponibilidades(profissionalId: number, lista: Disp
   }
 
   await esperar(500)
-  buscarPorId(profissionalId)
+  const profissional = buscarPorId(profissionalId)
   disponibilidades = { ...disponibilidades, [profissionalId]: ordenada }
   salvarArmazenado(CHAVE_DISPONIBILIDADES, disponibilidades)
+  registrarAtividade('profissional', `Horários de ${profissional.nome} atualizados`)
   return ordenada
 }

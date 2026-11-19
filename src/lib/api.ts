@@ -1,3 +1,5 @@
+import { encerrarSessao, obterSessao } from './sessao'
+
 export interface Pagina<T> {
   content: T[]
   totalElements: number
@@ -42,6 +44,7 @@ export function montarQuery(parametros: ParametrosQuery) {
 
 export async function requisicao<T>(caminho: string, opcoes: RequestInit = {}): Promise<T> {
   let resposta: Response
+  const token = obterSessao()?.token
 
   try {
     resposta = await fetch(`${BASE_URL}${caminho}`, {
@@ -49,6 +52,7 @@ export async function requisicao<T>(caminho: string, opcoes: RequestInit = {}): 
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...opcoes.headers,
       },
     })
@@ -61,6 +65,8 @@ export async function requisicao<T>(caminho: string, opcoes: RequestInit = {}): 
   const corpo = await resposta.json().catch(() => null)
 
   if (!resposta.ok) {
+    if (resposta.status === 401 && token) encerrarSessao()
+
     throw new ApiError(
       resposta.status,
       corpo?.mensagem ?? 'Algo deu errado. Tente de novo.',

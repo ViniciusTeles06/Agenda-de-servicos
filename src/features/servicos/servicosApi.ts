@@ -10,6 +10,8 @@ import {
   usandoApiReal,
 } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
+import { formatarDuracao } from '../../lib/formatters'
+import { registrarAtividade } from '../atividades/atividadesApi'
 import type { FiltrosServico, Servico, ServicoEntrada } from './types'
 
 const CHAVE = 'servicehub:servicos'
@@ -45,6 +47,12 @@ export function nomesDosServicos(ids: number[]) {
     .filter((item) => ids.includes(item.id))
     .map((item) => ({ id: item.id, nome: item.nome }))
     .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+}
+
+export function servicosAtivos() {
+  return servicos
+    .filter((item) => item.ativo)
+    .map((item) => ({ id: item.id, nome: item.nome }))
 }
 
 function salvar(lista: Servico[]) {
@@ -97,6 +105,7 @@ export async function criarServico(dados: ServicoEntrada): Promise<Servico> {
   const id = Math.max(0, ...servicos.map((item) => item.id)) + 1
   const novo: Servico = { ...dados, id, totalProfissionais: 0 }
   salvar([...servicos, novo])
+  registrarAtividade('servico', `Novo serviço ${novo.nome} cadastrado`)
   return novo
 }
 
@@ -110,6 +119,12 @@ export async function atualizarServico(id: number, dados: ServicoEntrada): Promi
   garantirNomeUnico(dados.nome, id)
   const atualizado: Servico = { ...atual, ...dados }
   salvar(servicos.map((item) => (item.id === id ? atualizado : item)))
+  registrarAtividade(
+    'servico',
+    atual.duracaoMinutos !== dados.duracaoMinutos
+      ? `Serviço ${atualizado.nome} passou a durar ${formatarDuracao(dados.duracaoMinutos)}`
+      : `Serviço ${atualizado.nome} foi atualizado`,
+  )
   return comContagem(atualizado)
 }
 
@@ -121,6 +136,7 @@ export async function alterarStatusServico(id: number, ativo: boolean): Promise<
   await esperar(300)
   const atualizado: Servico = { ...buscarPorId(id), ativo }
   salvar(servicos.map((item) => (item.id === id ? atualizado : item)))
+  registrarAtividade('servico', `Serviço ${atualizado.nome} foi ${ativo ? 'ativado' : 'desativado'}`)
   return comContagem(atualizado)
 }
 
@@ -137,4 +153,5 @@ export async function excluirServico(id: number): Promise<void> {
   }
 
   salvar(servicos.filter((item) => item.id !== id))
+  registrarAtividade('servico', `Serviço ${servico.nome} foi excluído`)
 }

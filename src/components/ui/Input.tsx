@@ -6,6 +6,7 @@ interface InputProps extends Omit<ComponentProps<'input'>, 'size'> {
   hint?: string
   error?: string
   icon?: ReactNode
+  trailing?: ReactNode
   containerClassName?: string
 }
 
@@ -14,6 +15,7 @@ function Input({
   hint,
   error,
   icon,
+  trailing,
   id,
   className = '',
   containerClassName = '',
@@ -50,14 +52,16 @@ function Input({
           aria-invalid={hasError || undefined}
           aria-describedby={message ? messageId : undefined}
           className={`h-[38px] w-full rounded-md border bg-surface text-xs text-ink transition-[border-color,box-shadow] duration-200 outline-none placeholder:text-placeholder disabled:cursor-not-allowed disabled:bg-surface-soft disabled:opacity-60 ${
-            icon ? 'pr-3.5 pl-[38px]' : 'px-3.5'
-          } ${
+            icon ? 'pl-[38px]' : 'pl-3.5'
+          } ${trailing ? 'pr-10' : 'pr-3.5'} ${
             hasError
               ? 'border-danger focus:shadow-[0_0_0_4px_rgba(187,7,10,0.12)]'
               : 'border-line hover:border-[#D3D9D4] focus:border-brand focus:shadow-[0_0_0_4px_rgba(19,71,161,0.14)]'
           } ${className}`}
           {...props}
         />
+
+        {trailing && <span className="absolute top-1/2 right-1.5 flex -translate-y-1/2">{trailing}</span>}
       </div>
 
       {message && (

@@ -1,12 +1,13 @@
 import { Bell, ChevronsUpDown } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Link, NavLink } from 'react-router'
-import Avatar from '../ui/Avatar'
+import MenuConta from './MenuConta'
 
 const navItems = [
   { to: '/app', label: 'Visão geral', end: true },
   { to: '/app/servicos', label: 'Serviços', end: false },
   { to: '/app/profissionais', label: 'Profissionais', end: false },
+  { to: '/app/atividades', label: 'Atividades', end: false },
 ]
 
 interface NavItemsProps {
@@ -88,13 +89,7 @@ function Topbar() {
             <Bell size={18} strokeWidth={1.6} />
           </motion.button>
 
-          <button
-            type="button"
-            aria-label="Abrir menu da conta"
-            className="rounded-full transition-shadow duration-200 hover:shadow-[0_0_0_3px_#E4E8E3]"
-          >
-            <Avatar name="Usuário" />
-          </button>
+          <MenuConta />
         </div>
       </div>
 

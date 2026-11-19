@@ -52,6 +52,7 @@ function Button({
   const reduceMotion = useReducedMotion()
   const blocked = disabled || loading
   const animated = !reduceMotion && !blocked
+  const showIcon = loading || Boolean(icon)
 
   return (
     <motion.button
@@ -66,19 +67,17 @@ function Button({
       } ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >
-      {loading ? (
-        <LoaderCircle aria-hidden="true" size={16} strokeWidth={1.8} className="shrink-0 animate-spin" />
-      ) : (
-        icon && (
-          <span
-            aria-hidden="true"
-            className={`flex shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${iconHoverClasses[iconHover]}`}
-          >
-            {icon}
-          </span>
-        )
+      {showIcon && (
+        <span
+          aria-hidden="true"
+          className={`flex shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+            loading ? '' : iconHoverClasses[iconHover]
+          }`}
+        >
+          {loading ? <LoaderCircle size={16} strokeWidth={1.8} className="animate-spin" /> : icon}
+        </span>
       )}
-      {children}
+      {children !== undefined && children !== null && <span>{children}</span>}
     </motion.button>
   )
 }
