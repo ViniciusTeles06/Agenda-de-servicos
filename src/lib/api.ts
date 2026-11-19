@@ -27,7 +27,17 @@ export class ApiError extends Error {
 
 const BASE_URL = String(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 
-export const usandoApiReal = BASE_URL !== ''
+export type ModuloApi = 'auth' | 'servicos' | 'profissionais' | 'agendamentos' | 'atividades' | 'relatorios'
+
+const MODULOS_LIGADOS = String(import.meta.env.VITE_API_MODULOS ?? '')
+  .split(',')
+  .map((modulo) => modulo.trim())
+  .filter(Boolean)
+
+export function apiAtiva(modulo: ModuloApi) {
+  if (BASE_URL === '') return false
+  return MODULOS_LIGADOS.length === 0 || MODULOS_LIGADOS.includes(modulo)
+}
 
 type ParametrosQuery = Record<string, string | number | boolean | undefined>
 

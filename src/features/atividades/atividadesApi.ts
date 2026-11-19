@@ -1,4 +1,4 @@
-import { esperar, lerArmazenado, montarQuery, paginar, requisicao, salvarArmazenado, usandoApiReal } from '../../lib/api'
+import { apiAtiva, esperar, lerArmazenado, montarQuery, paginar, requisicao, salvarArmazenado } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
 import type { Atividade, FiltrosAtividade, TipoAtividade } from './types'
 
@@ -37,7 +37,7 @@ function iniciais(): Atividade[] {
 let atividades = lerArmazenado<Atividade[]>(CHAVE, iniciais())
 
 export function registrarAtividade(tipo: TipoAtividade, descricao: string) {
-  if (usandoApiReal) return
+  if (apiAtiva('atividades')) return
 
   const id = Math.max(0, ...atividades.map((item) => item.id)) + 1
   atividades = [{ id, tipo, descricao, autor: 'Você', criadoEm: new Date().toISOString() }, ...atividades].slice(0, 200)
@@ -45,7 +45,7 @@ export function registrarAtividade(tipo: TipoAtividade, descricao: string) {
 }
 
 export async function listarAtividades(filtros: FiltrosAtividade): Promise<Pagina<Atividade>> {
-  if (usandoApiReal) {
+  if (apiAtiva('atividades')) {
     const query = montarQuery({
       tipo: filtros.tipo === 'todas' ? undefined : filtros.tipo,
       page: filtros.pagina,

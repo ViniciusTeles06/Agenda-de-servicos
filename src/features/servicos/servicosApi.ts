@@ -1,5 +1,6 @@
 import {
   ApiError,
+  apiAtiva,
   esperar,
   lerArmazenado,
   montarQuery,
@@ -7,7 +8,6 @@ import {
   paginar,
   requisicao,
   salvarArmazenado,
-  usandoApiReal,
 } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
 import { formatarDuracao } from '../../lib/formatters'
@@ -15,6 +15,31 @@ import { registrarAtividade } from '../atividades/atividadesApi'
 import type { FiltrosServico, Servico, ServicoEntrada } from './types'
 
 const CHAVE = 'servicehub:servicos'
+const usarApi = apiAtiva('servicos')
+
+export const servicoPodeSerExcluido = !usarApi
+
+interface ServicoApi {
+  id: number
+  nome: string
+  descricao: string | null
+  duracaoMinutos: number
+  ativo: boolean
+}
+
+function daApi(servico: ServicoApi): Servico {
+  return { ...servico, totalProfissionais: null }
+}
+
+function corpoDaApi(dados: ServicoEntrada) {
+  return JSON.stringify({ nome: dados.nome, descricao: dados.descricao, duracaoMinutos: dados.duracaoMinutos })
+}
+
+async function alinharStatus(servico: ServicoApi, ativo: boolean) {
+  if (servico.ativo === ativo) return servico
+  return requisicao<ServicoApi>(`/api/servicos/${servico.id}/${ativo ? 'ativar' : 'desativar'}`, { method: 'PATCH' })
+}
+
 export const CHAVE_PROFISSIONAIS = 'servicehub:profissionais'
 
 const iniciais: Servico[] = [
@@ -34,7 +59,7 @@ let servicos = lerArmazenado<Servico[]>(CHAVE, iniciais)
 
 function contarProfissionais(servico: Servico) {
   const vinculos = lerArmazenado<{ servicoIds: number[] }[] | null>(CHAVE_PROFISSIONAIS, null)
-  if (!vinculos) return servico.totalProfissionais
+  if (!vinculos) return servico.totalProfissionais ?? 0
   return vinculos.filter((item) => item.servicoIds.includes(servico.id)).length
 }
 
@@ -72,15 +97,14 @@ function garantirNomeUnico(nome: string, ignorarId?: number) {
 }
 
 export async function listarServicos(filtros: FiltrosServico): Promise<Pagina<Servico>> {
-  if (usandoApiReal) {
-    const query = montarQuery({
-      busca: filtros.busca,
-      ativo: filtros.status === 'todos' ? undefined : filtros.status === 'ativos',
-      page: filtros.pagina,
-      size: filtros.tamanho,
-      sort: 'nome,asc',
-    })
-    return requisicao(`/api/servicos${query}`)
+  if (usarApi) {
+    const query = montarQuery({ ativo: filtros.status === 'todos' ? undefined : filtros.status === 'ativos' })
+    const lista = await requisicao<ServicoApi[]>(`/api/servicos${query}`)
+    const termo = normalizarTexto(filtros.busca)
+    const filtrados = lista
+      .filter((item) => !termo || normalizarTexto(`${item.nome} ${item.descricao ?? ''}`).includes(termo))
+      .map(daApi)
+    return paginar(filtrados, filtros.pagina, filtros.tamanho)
   }
 
   await esperar()
@@ -96,8 +120,9 @@ export async function listarServicos(filtros: FiltrosServico): Promise<Pagina<Se
 }
 
 export async function criarServico(dados: ServicoEntrada): Promise<Servico> {
-  if (usandoApiReal) {
-    return requisicao('/api/servicos', { method: 'POST', body: JSON.stringify(dados) })
+  if (usarApi) {
+    const criado = await requisicao<ServicoApi>('/api/servicos', { method: 'POST', body: corpoDaApi(dados) })
+    return daApi(await alinharStatus(criado, dados.ativo))
   }
 
   await esperar(500)
@@ -110,8 +135,9 @@ export async function criarServico(dados: ServicoEntrada): Promise<Servico> {
 }
 
 export async function atualizarServico(id: number, dados: ServicoEntrada): Promise<Servico> {
-  if (usandoApiReal) {
-    return requisicao(`/api/servicos/${id}`, { method: 'PUT', body: JSON.stringify(dados) })
+  if (usarApi) {
+    const atualizado = await requisicao<ServicoApi>(`/api/servicos/${id}`, { method: 'PUT', body: corpoDaApi(dados) })
+    return daApi(await alinharStatus(atualizado, dados.ativo))
   }
 
   await esperar(500)
@@ -129,8 +155,9 @@ export async function atualizarServico(id: number, dados: ServicoEntrada): Promi
 }
 
 export async function alterarStatusServico(id: number, ativo: boolean): Promise<Servico> {
-  if (usandoApiReal) {
-    return requisicao(`/api/servicos/${id}/${ativo ? 'ativar' : 'desativar'}`, { method: 'PATCH' })
+  if (usarApi) {
+    const atualizado = await requisicao<ServicoApi>(`/api/servicos/${id}/${ativo ? 'ativar' : 'desativar'}`, { method: 'PATCH' })
+    return daApi(atualizado)
   }
 
   await esperar(300)
@@ -141,14 +168,14 @@ export async function alterarStatusServico(id: number, ativo: boolean): Promise<
 }
 
 export async function excluirServico(id: number): Promise<void> {
-  if (usandoApiReal) {
-    return requisicao(`/api/servicos/${id}`, { method: 'DELETE' })
+  if (usarApi) {
+    throw new ApiError(405, 'A API não permite excluir serviços. Desative o serviço para tirá-lo da agenda.')
   }
 
   await esperar(500)
   const servico = comContagem(buscarPorId(id))
 
-  if (servico.totalProfissionais > 0) {
+  if ((servico.totalProfissionais ?? 0) > 0) {
     throw new ApiError(409, 'Esse serviço está vinculado a profissionais. Desative em vez de excluir.')
   }
 

@@ -1,4 +1,4 @@
-import { esperar, lerArmazenado, montarQuery, requisicao, usandoApiReal } from '../../lib/api'
+import { apiAtiva, esperar, lerArmazenado, montarQuery, requisicao } from '../../lib/api'
 import { paraDataIso, somarDias } from '../../lib/datas'
 import { CHAVE_PROFISSIONAIS, nomesDosServicos, servicosAtivos } from '../servicos/servicosApi'
 import type { ContagemStatus, ProximoAtendimento, ResumoWorkspace, StatusAgendamento } from './types'
@@ -101,7 +101,7 @@ function gerarProximos(agora: Date): ProximoAtendimento[] {
 }
 
 export async function buscarResumo(data: string): Promise<ResumoWorkspace> {
-  if (usandoApiReal) {
+  if (apiAtiva('relatorios')) {
     return requisicao(`/api/relatorios/resumo${montarQuery({ data })}`)
   }
 

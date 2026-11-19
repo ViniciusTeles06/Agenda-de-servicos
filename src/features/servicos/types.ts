@@ -4,7 +4,7 @@ export interface Servico {
   descricao: string | null
   duracaoMinutos: number
   ativo: boolean
-  totalProfissionais: number
+  totalProfissionais: number | null
 }
 
 export interface ServicoEntrada {

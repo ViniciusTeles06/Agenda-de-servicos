@@ -1,5 +1,5 @@
-import { esperar, requisicao, usandoApiReal } from '../../lib/api'
-import type { Sessao } from '../../lib/sessao'
+import { apiAtiva, esperar, requisicao } from '../../lib/api'
+import type { Sessao, Usuario } from '../../lib/sessao'
 
 export interface DadosLogin {
   email: string
@@ -12,9 +12,20 @@ export interface DadosCadastro {
   senha: string
 }
 
+interface RespostaAuth {
+  accessToken: string
+  tokenType: string
+  expiresInSeconds: number
+  usuario: Usuario
+}
+
 export const ROTAS_AUTH = {
   login: '/api/auth/login',
   cadastro: '/api/auth/cadastro',
+}
+
+function paraSessao(resposta: RespostaAuth): Sessao {
+  return { token: resposta.accessToken, usuario: resposta.usuario }
 }
 
 function nomePeloEmail(email: string) {
@@ -30,8 +41,9 @@ function nomePeloEmail(email: string) {
 }
 
 export async function entrar(dados: DadosLogin): Promise<Sessao> {
-  if (usandoApiReal) {
-    return requisicao(ROTAS_AUTH.login, { method: 'POST', body: JSON.stringify(dados) })
+  if (apiAtiva('auth')) {
+    const resposta = await requisicao<RespostaAuth>(ROTAS_AUTH.login, { method: 'POST', body: JSON.stringify(dados) })
+    return paraSessao(resposta)
   }
 
   await esperar(700)
@@ -40,8 +52,9 @@ export async function entrar(dados: DadosLogin): Promise<Sessao> {
 }
 
 export async function cadastrar(dados: DadosCadastro): Promise<Sessao> {
-  if (usandoApiReal) {
-    return requisicao(ROTAS_AUTH.cadastro, { method: 'POST', body: JSON.stringify(dados) })
+  if (apiAtiva('auth')) {
+    const resposta = await requisicao<RespostaAuth>(ROTAS_AUTH.cadastro, { method: 'POST', body: JSON.stringify(dados) })
+    return paraSessao(resposta)
   }
 
   await esperar(800)

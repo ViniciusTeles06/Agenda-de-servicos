@@ -1,5 +1,6 @@
 import {
   ApiError,
+  apiAtiva,
   esperar,
   lerArmazenado,
   montarQuery,
@@ -7,7 +8,6 @@ import {
   paginar,
   requisicao,
   salvarArmazenado,
-  usandoApiReal,
 } from '../../lib/api'
 import type { Pagina } from '../../lib/api'
 import { registrarAtividade } from '../atividades/atividadesApi'
@@ -77,7 +77,7 @@ function garantirEmailUnico(email: string, ignorarId?: number) {
 }
 
 export async function listarProfissionais(filtros: FiltrosProfissional): Promise<Pagina<Profissional>> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     const query = montarQuery({
       busca: filtros.busca,
       ativo: filtros.status === 'todos' ? undefined : filtros.status === 'ativos',
@@ -105,7 +105,7 @@ export async function listarProfissionais(filtros: FiltrosProfissional): Promise
 }
 
 export async function criarProfissional(dados: ProfissionalEntrada): Promise<Profissional> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     return requisicao('/api/profissionais', { method: 'POST', body: JSON.stringify(dados) })
   }
 
@@ -119,7 +119,7 @@ export async function criarProfissional(dados: ProfissionalEntrada): Promise<Pro
 }
 
 export async function atualizarProfissional(id: number, dados: ProfissionalEntrada): Promise<Profissional> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     return requisicao(`/api/profissionais/${id}`, { method: 'PUT', body: JSON.stringify(dados) })
   }
 
@@ -133,7 +133,7 @@ export async function atualizarProfissional(id: number, dados: ProfissionalEntra
 }
 
 export async function alterarStatusProfissional(id: number, ativo: boolean): Promise<Profissional> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     return requisicao(`/api/profissionais/${id}/${ativo ? 'ativar' : 'desativar'}`, { method: 'PATCH' })
   }
 
@@ -145,7 +145,7 @@ export async function alterarStatusProfissional(id: number, ativo: boolean): Pro
 }
 
 export async function excluirProfissional(id: number): Promise<void> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     return requisicao(`/api/profissionais/${id}`, { method: 'DELETE' })
   }
 
@@ -160,7 +160,7 @@ export async function excluirProfissional(id: number): Promise<void> {
 }
 
 export async function listarDisponibilidades(profissionalId: number): Promise<Disponibilidade[]> {
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     const lista = await requisicao<Disponibilidade[]>(`/api/profissionais/${profissionalId}/disponibilidades`)
     return ordenarIntervalos(
       lista.map((item) => ({ ...item, horaInicio: normalizarHora(item.horaInicio), horaFim: normalizarHora(item.horaFim) })),
@@ -175,7 +175,7 @@ export async function listarDisponibilidades(profissionalId: number): Promise<Di
 export async function salvarDisponibilidades(profissionalId: number, lista: Disponibilidade[]): Promise<Disponibilidade[]> {
   const ordenada = ordenarIntervalos(lista)
 
-  if (usandoApiReal) {
+  if (apiAtiva('profissionais')) {
     return requisicao(`/api/profissionais/${profissionalId}/disponibilidades`, {
       method: 'PUT',
       body: JSON.stringify(ordenada),

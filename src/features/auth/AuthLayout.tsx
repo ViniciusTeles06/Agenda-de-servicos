@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import { Link } from 'react-router'
 import Logo from '../../components/ui/Logo'
-import { usandoApiReal } from '../../lib/api'
+import { apiAtiva } from '../../lib/api'
 
 interface AuthLayoutProps {
   titulo: string
@@ -69,7 +69,7 @@ function AuthLayout({ titulo, descricao, rodape, children }: AuthLayoutProps) {
               {children}
             </motion.div>
 
-            {!usandoApiReal && (
+            {!apiAtiva('auth') && (
               <motion.p
                 variants={item}
                 className="mt-6 rounded-md border border-line bg-surface-soft px-3 py-2.5 text-xs leading-snug text-muted"

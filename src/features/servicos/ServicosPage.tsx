@@ -15,7 +15,7 @@ import { formatarDuracao, pluralizar } from '../../lib/formatters'
 import { useConsulta } from '../../lib/useConsulta'
 import { useDebounce } from '../../lib/useDebounce'
 import ServicoFormModal from './ServicoFormModal'
-import { alterarStatusServico, excluirServico, listarServicos } from './servicosApi'
+import { alterarStatusServico, excluirServico, listarServicos, servicoPodeSerExcluido } from './servicosApi'
 import type { FiltroStatus, Servico } from './types'
 
 const TAMANHO_PAGINA = 8
@@ -45,12 +45,16 @@ function Acoes({ servico, alterando, onEditar, onAlternar, onExcluir }: AcoesPro
         disabled={alterando}
         onClick={onAlternar}
       />
-      <IconButton label={`Excluir ${servico.nome}`} tone="danger" icon={<Trash2 {...iconProps} />} onClick={onExcluir} />
+      {servicoPodeSerExcluido && (
+        <IconButton label={`Excluir ${servico.nome}`} tone="danger" icon={<Trash2 {...iconProps} />} onClick={onExcluir} />
+      )}
     </div>
   )
 }
 
-function Profissionais({ total }: { total: number }) {
+function Profissionais({ total }: { total: number | null }) {
+  if (total === null) return <span className="text-placeholder">—</span>
+
   return total === 0 ? (
     <span className="text-placeholder">Nenhum</span>
   ) : (
