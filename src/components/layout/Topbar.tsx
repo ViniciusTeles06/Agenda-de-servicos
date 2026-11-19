@@ -5,6 +5,8 @@ import MenuConta from './MenuConta'
 
 const navItems = [
   { to: '/app', label: 'Visão geral', end: true },
+  { to: '/app/agendamentos', label: 'Agendamentos', end: false },
+  { to: '/app/calendario', label: 'Calendário', end: false },
   { to: '/app/servicos', label: 'Serviços', end: false },
   { to: '/app/profissionais', label: 'Profissionais', end: false },
   { to: '/app/atividades', label: 'Atividades', end: false },
