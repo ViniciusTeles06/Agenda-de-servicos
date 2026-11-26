@@ -1,7 +1,8 @@
-import { Bell, ChevronsUpDown } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Link, NavLink } from 'react-router'
 import MenuConta from './MenuConta'
+import MenuWorkspace from './MenuWorkspace'
 
 const navItems = [
   { to: '/app', label: 'Visão geral', end: true },
@@ -64,19 +65,16 @@ function Topbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur-md">
       <div className="flex h-[75px] items-center px-4 sm:px-8 lg:px-12">
-        <Link to="/app" className="font-brand text-[15px] leading-none font-normal text-brand">
-          ServiceHub
-        </Link>
+        <div className="flex items-center">
+          <Link to="/app" className="font-brand text-[15px] leading-none font-normal text-brand">
+            ServiceHub
+          </Link>
+          <div className="ml-1.5 mr-5">
+            <MenuWorkspace />
+          </div>
+        </div>
 
-        <span aria-hidden="true" className="mx-10 hidden h-6 w-px bg-line md:block" />
-
-        <button
-          type="button"
-          aria-label="Trocar de workspace"
-          className="mr-6 hidden size-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-soft hover:text-ink md:flex"
-        >
-          <ChevronsUpDown size={16} strokeWidth={1.6} />
-        </button>
+        <span aria-hidden="true" className="mr-6 hidden h-6 w-px bg-line md:block" />
 
         <NavItems indicatorId="topbar-indicator" className="hidden h-full items-stretch gap-7 md:flex" />
 
