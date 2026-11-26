@@ -11,6 +11,7 @@ import { CalendarioPage } from './features/calendario'
 import LoginPage from './features/auth/LoginPage'
 import ProfissionaisPage from './features/profissionais/ProfissionaisPage'
 import ServicosPage from './features/servicos/ServicosPage'
+import ConfiguracaoNegocioPage from './features/workspace/ConfiguracaoNegocioPage'
 import WorkspacePage from './features/workspace/WorkspacePage'
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="servicos" element={<ServicosPage />} />
           <Route path="profissionais" element={<ProfissionaisPage />} />
           <Route path="atividades" element={<AtividadesPage />} />
+          <Route path="configuracoes-negocio" element={<ConfiguracaoNegocioPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
