@@ -9,6 +9,7 @@ const navItems = [
   { to: '/app/calendario', label: 'Calendário', end: false },
   { to: '/app/servicos', label: 'Serviços', end: false },
   { to: '/app/profissionais', label: 'Profissionais', end: false },
+  { to: '/app/clientes', label: 'Clientes', end: false },
   { to: '/app/atividades', label: 'Atividades', end: false },
 ]
 
