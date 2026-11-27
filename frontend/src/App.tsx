@@ -8,6 +8,7 @@ import { AgendamentosPage } from './features/agendamentos'
 import AtividadesPage from './features/atividades/AtividadesPage'
 import CadastroPage from './features/auth/CadastroPage'
 import { CalendarioPage } from './features/calendario'
+import ClientesPage from './features/clientes/ClientesPage'
 import LoginPage from './features/auth/LoginPage'
 import ProfissionaisPage from './features/profissionais/ProfissionaisPage'
 import ServicosPage from './features/servicos/ServicosPage'
@@ -36,6 +37,7 @@ function App() {
           <Route path="calendario" element={<CalendarioPage />} />
           <Route path="servicos" element={<ServicosPage />} />
           <Route path="profissionais" element={<ProfissionaisPage />} />
+          <Route path="clientes" element={<ClientesPage />} />
           <Route path="atividades" element={<AtividadesPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
